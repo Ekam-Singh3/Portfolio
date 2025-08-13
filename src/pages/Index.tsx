@@ -88,27 +88,103 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
           "Designed and developed an innovative go-kart powered by a Bajaj Chetak engine, integrating advanced safety features including alcohol detection, flotation system, and real-time GPS tracking.",
           "Engineered for enhanced passenger safety and ride comfort, the project showcased a fusion of mechanical design and embedded systems for accident prevention."
         ],
-        path: "models/7_dof.glb",
+        images: [
+          "images/WhatsApp Image 2025-08-11 at 17.44.02_01893b0d.jpg",
+          "images/WhatsApp Image 2025-08-11 at 17.44.02_6a2054b7.jpg",
+          "images/WhatsApp Image 2025-08-11 at 17.44.03_1701bbad.jpg",
+          "images/WhatsApp Image 2025-08-11 at 17.44.03_b1f46a21.jpg"
+        ],
         style:"ml-5 mb-7 flex flex-wrap gap-2",
         data: ["Arduino IDE", "Manufacturing"]
       },
     ]), []);
     const ProjectViewer = ({ path, images }: { path?: string; images?: string[] }) => {
-    const [index, setIndex] = useState(0);
-            useEffect(() => {
-            if (!images || images.length === 0) return;
-            const interval = setInterval(() => {
-              setIndex((prev) => (prev + 1) % images.length);
-            }, 3000);
-            return () => clearInterval(interval);
-            }, [images]);
-     } 
+      const [index, setIndex] = useState(0);
+      
+      useEffect(() => {
+        if (!images || images.length === 0) return;
+        const interval = setInterval(() => {
+          setIndex((prev) => (prev + 1) % images.length);
+        }, 3000);
+        return () => clearInterval(interval);
+      }, [images]);
+
+      if (images && images.length > 0) {
+        return (
+          <div className="relative mt-6 mb-6 w-3/5 h-[300px] overflow-hidden rounded-lg">
+            <img
+              src={images[index]}
+              alt={`Project image ${index + 1}`}
+              className="absolute w-full h-full object-cover transition-opacity duration-500"
+            />
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+              {images.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setIndex(i)}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    i === index ? 'bg-white' : 'bg-white/50'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      if (path) {
+        return (
+          <model-viewer
+            src={path}
+            alt="CAD model of the project"
+            camera-controls
+            auto-rotate
+            style={{ width: '100%', height: '400px' }}
+          ></model-viewer>
+        );
+      }
+
+      return null;
+    };
 
     // Experience
-    const experience = useMemo(() => ([
-      { company: "Rockpecker Pvt. Ltd.", role: "Quality Control Engineer Intern", year: "2024", details: "Inspection workflows, tolerancing, and QA documentation for precision parts." },
-      { company: "Vibracoustic India Pvt. Ltd.", role: "CAD Engineer Intern", year: "2023", details: "CAD modeling, drafting standards, and design-to-manufacture collaboration." },
-    ]), []);
+    const experience = useMemo(() => [
+      {
+        company: "Rockpecker Pvt. Ltd.",
+        role: "Quality Control Engineer Intern",
+        year: "2024",
+        details: (
+          <>
+            <ul className="list-disc list-inside text-justify space-y-1">
+              <li>
+                Performed quality inspections on production pieces using precision instruments, including Trimos height gauge, interpreted production drawings to verify dimensional accuracy and compliance, and prepared detailed reports for final evaluation.
+              </li>
+              <li>
+                Assisted in streamlining the production process by conducting in-line inspections of machined parts, identifying defects early (leading to modification in production), and collaborating with the production team to implement corrective actions, reducing overall defect rates.
+              </li>
+            </ul>
+          </>
+        ),
+      },
+      {
+        company: "Vibracoustic India Pvt. Ltd.",
+        role: "CAD Engineer Intern",
+        year: "2023",
+        details: (
+          <>
+            <ul className="list-disc list-inside text-justify space-y-1">
+              <li>
+                I acquired proficiency in NX, ANSYS and Hypermesh through guidance from experienced professionals during my internship.
+              </li>
+              <li>
+                Prepared reports on the above information and reported the insights.
+              </li>
+            </ul>
+          </>
+        ),
+      },
+    ], []);
+
 
     // Skills
     const skills = useMemo(() => ([
@@ -162,21 +238,49 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
     }, [skills]);
 
     // Contact form
+    // inside your Index component (replace handleSubmit)
+    const WEB_APP_URL =
+      "https://script.google.com/macros/s/AKfycbysFE2i45GfmX-yYplbhMoLke9Y2Pb4UGwsDnGqdyeHOtDrTeohK_lfW1aSQIemwhv6/exec";
+
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
-      if (!name.trim() || !email.includes("@") || message.trim().length < 10) {
-        toast({ title: "Please complete the form", description: "Add a valid email and at least 10 characters in your message." });
-        return;
+      setLoading(true);
+
+      // Keys must match what the GAS script expects
+      const formData = new FormData();
+      formData.append("name", name);     // lowercase
+      formData.append("email", email);   // lowercase
+      formData.append("message", message); // lowercase
+
+      try {
+        const response = await fetch(WEB_APP_URL, {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+        if (result.status === "success") {
+          alert("Message sent and stored successfully!");
+          setName("");
+          setEmail("");
+          setMessage("");
+        } else {
+          alert("Failed to send: " + result.message);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Something went wrong.");
+      } finally {
+        setLoading(false);
       }
-      const subject = encodeURIComponent("Portfolio Contact — Ekam Singh");
-      const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
-      window.location.href = `mailto:ekam.singh@example.com?subject=${subject}&body=${body}`;
-      toast({ title: "Opening your email client…", description: "If nothing happens, email ekam.singh@example.com" });
     };
+
+        
 
     // Project card hover lift
     const onCardEnter = (el: HTMLElement) => {
@@ -364,16 +468,9 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
                         </CardContent>
                       </div>
 
-                      {/* Right side - 3D Model */}
-
+                      {/* Right side - 3D Model or Image Carousel */}
                       <div className="flex justify-center">
-                        <model-viewer
-                          src={p.path} 
-                          alt="CAD model of the project"
-                          camera-controls
-                          auto-rotate
-                          style={{ width: '100%', height: '400px' }}
-                        ></model-viewer>
+                        <ProjectViewer path={p.path} images={p.images} />
                       </div>
 
                     </div>
@@ -405,7 +502,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
                     <div className="text-sm text-muted-foreground">{e.year}</div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm text-muted-foreground text-justify">{e.details}</p>
+                    {e.details}
                   </CardContent>
                 </Card>
               ))}
@@ -567,6 +664,62 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
                   </ul>
                 </CardContent>
               </Card>
+              <Card className="w-full">
+                <CardHeader>
+                  <CardTitle className="text-2xl font-bold">Publications</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="list-inside list-disc text-base text-muted-foreground space-y-1">
+                    {/* <li> */}
+                      <span className="font-semibold">
+                        7th International Conference of The Robotics Society (AIR 2025) | Accepted
+                      </span>
+                      <br />
+                      <span className="italic">June 2025</span>
+                      <br />
+                      <span className="font-semibold">
+                        Title: Design and Analysis of a Mars Rover with Rocker-Bogie Suspension carrying a 5-DOF Robotic Arm.
+                      </span>
+                      <br />
+                      Contributed to research on 5-DOF Robotic Arm, Rocker-Bogie length calculations, and chassis stress calculation for a multi-subsystem Martian rover, presented at a leading robotics conference highlighting the research paper name and conference.
+                      <br />
+                      <span className="font-semibold">
+                        Authors: Manish Jain, Ekam Singh, Shyam Sundar Mallampalli, Anant Tomar, Sachin Kansal, Ashish Singla
+                      </span>
+                      <br />
+                    {/* </li> */}
+                  </ul>
+                </CardContent>
+              </Card>
+              
+              <Card className="w-full">
+                <CardHeader>
+                  <CardTitle className="text-2xl font-bold">Certifications</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="list-inside list-disc text-base text-muted-foreground space-y-1">
+                    <li>
+                      2nd Overall Position in International Rover Challenge 2025 (IRC’25) held at BITS, Goa.
+                    </li>
+                    <li>
+                      Winner of RoboWars, Saturnalia’24 held at Thapar University.
+                    </li>
+                    <li>
+                      Finalist at International Rover Challenge 2024 (IRC’24) held at PSG iTech, Coimbatore.
+                    </li>
+                    <li>
+                      Winner of RoboWars, Saturnalia’23 held at Thapar University.
+                    </li>
+                    <li>
+                      Participated in National level CBSE Science Exhibition held at Suncity School, Gurugram.
+                    </li>
+                    <li>
+                      Winner of State Level CBSE Science Exhibition held at GreenLand Sr. Sec. Public School, Ludhiana.
+                    </li>
+                  </ul>
+                </CardContent>
+              </Card>
+              
             </div>
           </section>
 
@@ -575,11 +728,31 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
             <h2 className="text-3xl font-bold tracking-tight">Contact</h2>
             <div className="mt-6 grid gap-8 md:grid-cols-2">
               <div className="space-y-4">
-                <div className="flex items-center gap-3 text-sm text-muted-foreground"><Mail className="h-4 w-4" /> ekam.singh@gmail.com</div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground"><Phone className="h-4 w-4" /> +91-1101101010101</div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground"><MapPin className="h-4 w-4" /> India</div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground"><Linkedin className="h-4 w-4" /> linked/in/ekam-singh</div>
-                <div className="flex items-center gap-3 text-sm text-muted-foreground"><Github className="h-4 w-4" /> /ekam-singh</div>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground"><Mail className="h-4 w-4" /> ekamsingh11019@gmail.com</div>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground"><Phone className="h-4 w-4" /> +91-8847619220</div>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground"><MapPin className="h-4 w-4" /> Mohali, Punjab, India</div>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <Linkedin className="h-4 w-4" />
+                  <a
+                    href="https://www.linkedin.com/in/ekam-singh3"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
+                    www.linkedin.com/in/ekam-singh3
+                  </a>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                  <Github className="h-4 w-4" />
+                  <a
+                    href="https://github.com/Ekam-Singh3"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
+                    https://github.com/Ekam-Singh3
+                  </a>
+                </div>
               </div>
               <Card>
                 <CardHeader>
@@ -588,23 +761,46 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                      <label className="mb-1 block text-sm">Name</label>
-                      <Input value={name} onChange={(e) => setName(e.target.value)} required placeholder="Your name" />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm">Email</label>
-                      <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="you@example.com" />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm">Message</label>
-                      <Textarea value={message} onChange={(e) => setMessage(e.target.value)} required placeholder="Hello, I'd like to discuss…" />
-                    </div>
-                    <div className="flex gap-3">
-                      <Button type="submit" variant="hero" className="hover-scale"><Mail className="mr-1" /> Send</Button>
-                        <a href={`mailto:ekam.singh@example.com`}><Button variant="outline" className="hover-scale">Open Mail</Button></a>
-                    </div>
-                  </form>
+                  <div>
+                    <label className="mb-1 block text-sm">Name</label>
+                    <Input
+                      name="name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      placeholder="Your name"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm">Email</label>
+                    <Input
+                      type="email"
+                      name="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      placeholder="you@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-sm">Message</label>
+                    <Textarea
+                      name="message"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      required
+                      placeholder="Hello, I'd like to discuss…"
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <Button type="submit" variant="hero" className="hover-scale">
+                      <Mail className="mr-1" /> Send
+                    </Button>
+                    {/* <a href={`mailto:ekamsingh11019@gmail.com`}>
+                      <Button variant="outline" className="hover-scale">Open Mail</Button>
+                    </a> */}
+                  </div>
+                </form>
                 </CardContent>
               </Card>
             </div>
