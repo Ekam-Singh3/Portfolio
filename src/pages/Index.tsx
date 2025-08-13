@@ -311,14 +311,26 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
         <main id="top" className="container">
           {/* Hero */}
           <section aria-label="Hero" className="relative py-20 md:py-28">
-    {/* Spline background */}
-    <div className="absolute ml-[550px] inset-0 -z-10">
+            {/* Spline background */}
+            {/* Mobile: show above hero, Desktop: keep at right */}
+            <div>
+              <div className="block md:hidden mb-8 w-full flex justify-center">
+                <div className="w-3/4 max-w-xs">
                   <spline-viewer
-                    loading-anim-type="spinner-small-dark" 
+                    loading-anim-type="spinner-small-dark"
                     url="https://prod.spline.design/19UELZ4mN2vEfJuL/scene.splinecode"
-                    style={{ width: "100%", height: "55%" }}
+                    style={{ width: "100%", height: "300px" }}
                   ></spline-viewer>
                 </div>
+              </div>
+              <div className="hidden md:block absolute ml-[550px] inset-0 -z-10">
+                <spline-viewer
+                  loading-anim-type="spinner-small-dark"
+                  url="https://prod.spline.design/19UELZ4mN2vEfJuL/scene.splinecode"
+                  style={{ width: "100%", height: "55%" }}
+                ></spline-viewer>
+              </div>
+            </div>
 
                 {/* Floating SVGs */}
                 <svg
