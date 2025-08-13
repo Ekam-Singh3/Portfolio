@@ -694,7 +694,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
               
               <Card className="w-full">
                 <CardHeader>
-                  <CardTitle className="text-2xl font-bold">Certifications</CardTitle>
+                  <CardTitle className="text-2xl font-bold">Honours and Awards</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <ul className="list-inside list-disc text-base text-muted-foreground space-y-1">
