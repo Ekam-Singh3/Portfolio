@@ -301,6 +301,14 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
               <a href="#experience" className="text-sm text-muted-foreground hover:text-foreground">Experience</a>
               <a href="#skills" className="text-sm text-muted-foreground hover:text-foreground">Skills</a>
               <a href="#contact" className="text-sm text-muted-foreground hover:text-foreground">Contact</a>
+              <a
+                href="/files/Ekam_s_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-muted-foreground hover:text-foreground font-semibold"
+              >
+                Resume
+              </a>
             </div>
             <div className="flex items-center gap-2">
               <a href="#contact"><Button variant="hero" size="sm" className="hover-scale">Let's talk</Button></a>
@@ -377,6 +385,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
                     B.E. Mechatronics — robotics design, mechanical systems, and rapid
                     prototyping.
                   </p>
+                  
                   <div className="hero-ctas mt-8 flex flex-wrap items-center justify-center gap-3">
                     <a href="#contact">
                       <Button variant="hero" className="hover-scale">
@@ -401,7 +410,11 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
                         <Github className="mr-1" /> GitHub
                       </Button>
                     </a>
+                    {/* Remove CV/Resume button from here */}
                   </div>
+
+                  
+
                   <div className="mt-4 flex items-center justify-center gap-3 text-sm text-muted-foreground">
                     <MapPin className="h-4 w-4" /> <span>Mohali, Punjab, India</span>
                   </div>
