@@ -322,7 +322,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
             {/* Spline background */}
             {/* Mobile: show above hero, Desktop: keep at right */}
             <div>
-              <div className="block md:hidden mb-8 w-full flex justify-center">
+              {/* <div className="block md:hidden mb-8 w-full flex justify-center">
                 <div className="w-3/4 max-w-xs">
                   <spline-viewer
                     loading-anim-type="spinner-small-dark"
@@ -330,7 +330,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
                     style={{ width: "100%", height: "300px" }}
                   ></spline-viewer>
                 </div>
-              </div>
+              </div> */}
               <div className="hidden md:block absolute ml-[550px] inset-0 -z-10">
                 <spline-viewer
                   loading-anim-type="spinner-small-dark"
