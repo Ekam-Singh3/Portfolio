@@ -322,7 +322,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
             {/* Spline background */}
             {/* Mobile: show above hero, Desktop: keep at right */}
             <div>
-              <div className="block md:hidden mb-8 w-full flex justify-center">
+              <div className="md:hidden mb-8 w-full flex justify-center">
                 <div className="w-3/4 max-w-xs">
                   <spline-viewer
                     loading-anim-type="spinner-small-dark"
@@ -724,16 +724,16 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
                 <CardContent>
                   <ul className="list-inside list-disc text-base text-muted-foreground space-y-1">
                     <li>
-                      2nd Overall Position in International Rover Challenge 2025 (IRC’25) held at BITS, Goa.
+                      2nd Overall Position in International Rover Challenge 2025 (IRC'25) held at BITS, Goa.
                     </li>
                     <li>
-                      Winner of RoboWars, Saturnalia’24 held at Thapar University.
+                      Winner of RoboWars, Saturnalia'24 held at Thapar University.
                     </li>
                     <li>
-                      Finalist at International Rover Challenge 2024 (IRC’24) held at PSG iTech, Coimbatore.
+                      Finalist at International Rover Challenge 2024 (IRC'24) held at PSG iTech, Coimbatore.
                     </li>
                     <li>
-                      Winner of RoboWars, Saturnalia’23 held at Thapar University.
+                      Winner of RoboWars, Saturnalia'23 held at Thapar University.
                     </li>
                     <li>
                       Participated in National level CBSE Science Exhibition held at Suncity School, Gurugram.
