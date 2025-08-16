@@ -7,13 +7,28 @@ export function useIsMobile() {
     () => typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT
   )
 
-  React.useEffect(() => {
+  // Use useLayoutEffect for faster updates after DOM changes (client only)
+  const useIsomorphicLayoutEffect =
+    typeof window !== "undefined" ? React.useLayoutEffect : React.useEffect
+
+  useIsomorphicLayoutEffect(() => {
     if (typeof window === "undefined") return
 
     const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
 
+    // Throttle updates to avoid excessive re-renders
+    let ticking = false
     const onChange = (e: MediaQueryListEvent) => {
-      setIsMobile(e.matches)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setIsMobile(prev => {
+            if (prev !== e.matches) return e.matches
+            return prev
+          })
+          ticking = false
+        })
+        ticking = true
+      }
     }
 
     // Add listener (cross-browser support)
