@@ -461,8 +461,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
           {/* Projects */}
           <section
             id="projects"
-            className="scroll-mt-24 py-16 opacity-0"
-            data-animate
+            className="scroll-mt-24 py-16 "
           >
             <h2 className="text-3xl font-bold tracking-tight">Projects</h2>
 
@@ -535,7 +534,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
           </section>
 
           {/* Skills */}
-          <section id="skills" className="scroll-mt-24 py-16 opacity-0" data-animate>
+          <section id="skills" className="scroll-mt-24 py-16 " >
             <h2 className="text-3xl font-bold tracking-tight mb-8">Skills Overview</h2>
             <div id="skills-section" className="grid gap-6 md:grid-cols-2">
               <Card>

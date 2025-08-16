@@ -1,35 +1,41 @@
-import React from "react"
-import { useIsMobile } from "./useIsMobile"
-import Projects from "./Projects"
-import Skills from "./Skills"
+import * as React from "react"
 
-export default function Portfolio() {
-  const isMobile = useIsMobile()
+const MOBILE_BREAKPOINT = 768
 
-  // 🔑 Don't block rendering while hook resolves
-  if (isMobile === undefined) {
-    // Optional: show a loader or fallback layout
-    return <div className="text-center p-10">Loading...</div>
-  }
-
-  return (
-    <div>
-      <h1 className="text-3xl font-bold text-center">My Portfolio</h1>
-
-      {/* Example conditional rendering */}
-      {isMobile ? (
-        <div className="p-4">
-          <h2 className="text-xl">Mobile View</h2>
-          <Projects compact />   {/* You can pass props for mobile-friendly UI */}
-          <Skills compact />
-        </div>
-      ) : (
-        <div className="p-8">
-          <h2 className="text-xl">Desktop View</h2>
-          <Projects />
-          <Skills />
-        </div>
-      )}
-    </div>
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState(
+    () => typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT
   )
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") return
+
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+
+    const onChange = (e: MediaQueryListEvent) => {
+      setIsMobile(e.matches)
+    }
+
+    // Add listener (cross-browser support)
+    if (mql.addEventListener) {
+      mql.addEventListener("change", onChange)
+    } else {
+      mql.addListener(onChange) // Safari fallback
+    }
+
+    // Set initial state
+    setIsMobile(mql.matches)
+
+    return () => {
+      if (mql.removeEventListener) {
+        mql.removeEventListener("change", onChange)
+      } else {
+        mql.removeListener(onChange)
+      }
+    }
+  }, [])
+
+  return isMobile
 }
+
+
