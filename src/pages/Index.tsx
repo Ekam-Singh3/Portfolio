@@ -290,11 +290,37 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
       anime({ targets: el, translateY: 0, duration: 250, easing: "easeOutQuad" });
     };
 
+    // Mobile menu state
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    // Prevent scroll when menu is open
+    useEffect(() => {
+      if (mobileMenuOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = '';
+      }
+      return () => { document.body.style.overflow = ''; };
+    }, [mobileMenuOpen]);
+
     return (
       <div className="min-h-screen font-sans">
         <header className="sticky top-0 z-40 border-b border-sidebar-border bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <nav className="container flex h-16 items-center justify-between">
-            <a href="#top" className="text-lg font-semibold story-link">Ekam Singh</a>
+            {/* Mobile menu button on the left */}
+            <div className="flex items-center gap-2">
+              <button
+                className="md:hidden flex items-center justify-center p-2 rounded focus:outline-none focus:ring-2 focus:ring-ring mr-2"
+                aria-label="Open menu"
+                onClick={() => setMobileMenuOpen((v) => !v)}
+                type="button"
+              >
+                <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+              <a href="#top" className="text-lg font-semibold story-link">Ekam Singh</a>
+            </div>
+            {/* Desktop menu */}
             <div className="hidden gap-6 md:flex">
               <a href="#about" className="text-sm text-muted-foreground hover:text-foreground">About</a>
               <a href="#projects" className="text-sm text-muted-foreground hover:text-foreground">Projects</a>
@@ -314,6 +340,62 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
               <a href="#contact"><Button variant="hero" size="sm" className="hover-scale">Let's talk</Button></a>
             </div>
           </nav>
+          {/* Mobile menu bar (pushes content down) */}
+          <div
+            className={`md:hidden w-full bg-background border-b border-sidebar-border shadow transition-all duration-300 overflow-hidden ${mobileMenuOpen ? 'max-h-96 py-2' : 'max-h-0 py-0'}`}
+            style={{
+              transitionProperty: 'max-height, padding',
+            }}
+          >
+            <div className="flex flex-col gap-2 px-4">
+              {[
+                { label: 'About', id: 'about' },
+                { label: 'Projects', id: 'projects' },
+                { label: 'Experience', id: 'experience' },
+                { label: 'Skills', id: 'skills' },
+                { label: 'Contact', id: 'contact' },
+              ].map(({ label, id }) => (
+                <button
+                  key={id}
+                  className="py-2 text-left text-base text-muted-foreground hover:text-foreground focus:outline-none bg-transparent border-0"
+                  style={{ background: 'none' }}
+                  onClick={e => {
+                    e.preventDefault();
+                    setMobileMenuOpen(false);
+                    // If on mobile (width < 768px), use smooth scroll. Else, use default anchor behavior.
+                    if (window.innerWidth < 768) {
+                      const el = document.getElementById(id);
+                      if (el) {
+                        // Get the header height (sticky header)
+                        const header = document.querySelector('header');
+                        const headerHeight = header ? header.getBoundingClientRect().height : 0;
+                        const elTop = el.getBoundingClientRect().top + window.scrollY;
+                        window.scrollTo({
+                          top: elTop - headerHeight,
+                          behavior: 'smooth',
+                        });
+                      } else {
+                        window.location.hash = `#${id}`;
+                      }
+                    } else {
+                      window.location.hash = `#${id}`;
+                    }
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+              <a
+                href="/files/Ekam_s_Resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-2 text-base text-muted-foreground hover:text-foreground font-semibold"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Resume
+              </a>
+            </div>
+          </div>
         </header>
 
         <main id="top" className="container">
